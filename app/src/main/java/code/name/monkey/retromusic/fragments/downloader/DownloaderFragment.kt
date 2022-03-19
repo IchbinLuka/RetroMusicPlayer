@@ -2,6 +2,7 @@ package code.name.monkey.retromusic.fragments.downloader
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -64,8 +65,8 @@ class DownloaderFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         try {
-            YoutubeDL.getInstance().init(activity!!.applicationContext)
-            FFmpeg.getInstance().init(activity!!.applicationContext)
+            YoutubeDL.getInstance().init(requireActivity().applicationContext)
+            FFmpeg.getInstance().init(requireActivity().applicationContext)
         } catch (e: YoutubeDLException) {
             Log.e("Youtube", "Error")
         }
@@ -86,14 +87,14 @@ class DownloaderFragment : Fragment() {
                 description = "Downloading"
             }
         }
-        val builder = NotificationCompat.Builder(activity!!.applicationContext, NOTIFICATION_CHANNEL_ID)
+        val builder = NotificationCompat.Builder(requireActivity().applicationContext, NOTIFICATION_CHANNEL_ID)
         builder
             .setContentTitle(getString(R.string.notification_downloading))
             .setSmallIcon(R.drawable.ic_download_music)
 
         Log.d("Downloader", MediaStore.Audio.Media.getContentUri("external").path!!)
 
-        model.downloadVideo(link = link, builder = builder, context = context!!, id = id)
+        model.downloadVideo(link = link, builder = builder, context = requireContext(), id = id)
     }
 
 
@@ -155,18 +156,18 @@ class DownloaderFragment : Fragment() {
             }
         }
         model.downloadResult.observeForever {
-            if (it.successful) {
+            /*if (it.successful) {
                 val song = it.songInfo
                 val tagEditorIntent = Intent(activity, SongTagEditorActivity::class.java)
                 tagEditorIntent.putExtra(AbsTagEditorActivity.TITLE_ID, song.title)
                 tagEditorIntent.putExtra(AbsTagEditorActivity.AUTHOR_ID, song.author)
                 tagEditorIntent.putExtra(AbsTagEditorActivity.EXTRA_ID, getSongId(song.path))
                 activity?.startActivity(tagEditorIntent)
-                MediaStoreUtil.addToMediaStore(File(song.path), context!!)
+                MediaStoreUtil.addToMediaStore(File(song.path), requireContext())
             } else {
                 val toast = Toast.makeText(context, R.string.error_while_downloading, Toast.LENGTH_SHORT)
                 toast.show()
-            }
+            }*/
             //binding.downloadButton.isEnabled = true
         }
     }
@@ -174,7 +175,7 @@ class DownloaderFragment : Fragment() {
 
 
     private fun getSongId(path: String): Long {
-        val cr = context!!.contentResolver
+        val cr = requireContext().contentResolver
         val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val selection: String = MediaStore.Audio.Media.DATA
         val selArgs = arrayOf(path)

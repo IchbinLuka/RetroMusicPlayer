@@ -20,7 +20,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM
 import android.view.View
-import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.core.os.bundleOf
 import androidx.core.text.HtmlCompat
@@ -116,7 +115,7 @@ class HomeFragment :
 
     private fun setupListeners() {
 
-        binding.downloadButton?.setOnClickListener {
+        binding.downloadButton.setOnClickListener {
             findNavController().navigate(
                 R.id.download_fragment
             )
@@ -204,7 +203,7 @@ class HomeFragment :
         binding.lastAdded.elevatedAccentColor()
         binding.topPlayed.elevatedAccentColor()
         binding.actionShuffle.elevatedAccentColor()
-        binding.downloadButton?.elevatedAccentColor()
+        binding.downloadButton.elevatedAccentColor()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
