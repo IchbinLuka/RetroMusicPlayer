@@ -156,7 +156,7 @@ class DownloaderFragment : Fragment() {
             }
         }
         model.downloadResult.observeForever {
-            /*if (it.successful) {
+            if (it.successful) {
                 val song = it.songInfo
                 val tagEditorIntent = Intent(activity, SongTagEditorActivity::class.java)
                 tagEditorIntent.putExtra(AbsTagEditorActivity.TITLE_ID, song.title)
@@ -167,7 +167,7 @@ class DownloaderFragment : Fragment() {
             } else {
                 val toast = Toast.makeText(context, R.string.error_while_downloading, Toast.LENGTH_SHORT)
                 toast.show()
-            }*/
+            }
             //binding.downloadButton.isEnabled = true
         }
     }
