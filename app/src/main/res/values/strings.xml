@@ -539,4 +539,5 @@
     <string name="notification_downloading">Downloading</string>
     <string name="notification_finished">Finished</string>
     <string name="pref_title_api_key">Google Data API Key</string>
+    <string name="no_google_api_key_warning">No Google Data API Key configured. Searching for videos unavailable</string>
 </resources>

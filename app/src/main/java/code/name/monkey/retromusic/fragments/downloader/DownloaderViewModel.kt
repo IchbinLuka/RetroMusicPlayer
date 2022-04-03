@@ -13,6 +13,7 @@ import androidx.lifecycle.viewModelScope
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.networkModule
 import code.name.monkey.retromusic.repository.RealRepository
+import code.name.monkey.retromusic.util.PreferenceUtil
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.youtube.YouTube
@@ -58,7 +59,8 @@ class DownloaderViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             downloading = true
             val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "music")
-            val request = YoutubeDLRequest(link)
+            val requestUrl = if (link.contains("https://")) { link } else { "ytsearch:\"$link\"" }
+            val request = YoutubeDLRequest(requestUrl)
             request.addOption("-o", "${dir.absolutePath}/%(title)s.%(ext)s")
             request.addOption("-f", "bestaudio")
             request.addOption("--extract-audio")
@@ -162,7 +164,7 @@ class DownloaderViewModel : ViewModel() {
             val request = service!!.search().list("snippet")
                 .set("q", search)
                 .set("maxResults", maxResults)
-                .set("key", "AIzaSyAGlKtNFklueU9mUVWVb6p8T58o4TZF8dc")
+                .set("key", PreferenceUtil.googleDataApiKey ?: "")
 
             try {
                 val result = request.execute()

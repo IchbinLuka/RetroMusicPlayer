@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -46,12 +47,15 @@ import code.name.monkey.retromusic.activities.base.AbsMusicServiceActivity
 import code.name.monkey.retromusic.extensions.dip
 import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import code.name.monkey.retromusic.network.LastFMService
+import code.name.monkey.retromusic.util.PreferenceUtil
 import org.koin.android.ext.android.inject
 
 
 class DownloaderFragment : Fragment() {
     private var _binding: FragmentDownloaderBinding? = null
     private val binding get() = _binding!!
+
+    private val googleApiKeyConfigured: Boolean = PreferenceUtil.googleDataApiKey ?: "" != ""
 
     var resultData: List<SearchResult> = listOf()
     private val adapter = YTSearchAdapter(resultData) {
@@ -73,8 +77,13 @@ class DownloaderFragment : Fragment() {
     }
 
     fun search() {
-        binding.loadingIndicator.visibility = View.VISIBLE
-        model.searchVideos(binding.searchView.text.toString())
+        val text = binding.searchView.text.toString()
+        if (googleApiKeyConfigured && !text.contains("https://")) {
+            binding.loadingIndicator.visibility = View.VISIBLE
+            model.searchVideos(text)
+        } else {
+            download(text)
+        }
     }
 
     fun download(link: String): Unit {
@@ -118,6 +127,7 @@ class DownloaderFragment : Fragment() {
         binding.clearText.setOnClickListener {
             binding.searchView.clearText()
         }
+        binding.googleApiWarning.visibility = if (googleApiKeyConfigured) View.GONE else View.VISIBLE
         return binding.root
     }
 

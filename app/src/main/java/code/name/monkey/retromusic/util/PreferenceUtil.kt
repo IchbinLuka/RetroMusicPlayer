@@ -714,6 +714,10 @@ object PreferenceUtil {
 
     val swipeAnywhereToChangeSong
         get() = sharedPreferences.getBoolean(SWIPE_ANYWHERE_NOW_PLAYING, true)
+
+    var googleDataApiKey
+        get() = sharedPreferences.getString(GOOGLE_API_KEY, "")
+        set(value) = sharedPreferences.edit { putString(GOOGLE_API_KEY, value) }
 }
 
 enum class LyricsType {
