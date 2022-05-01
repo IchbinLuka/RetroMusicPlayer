@@ -101,8 +101,6 @@ class DownloaderFragment : Fragment() {
             .setContentTitle(getString(R.string.notification_downloading))
             .setSmallIcon(R.drawable.ic_download_music)
 
-        Log.d("Downloader", MediaStore.Audio.Media.getContentUri("external").path!!)
-
         model.downloadVideo(link = link, builder = builder, context = requireContext(), id = id)
     }
 
