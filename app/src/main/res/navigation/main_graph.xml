@@ -135,5 +135,9 @@
 
     <fragment
         android:id="@+id/download_fragment"
-        android:name="code.name.monkey.retromusic.fragments.downloader.DownloaderFragment"/>
+        android:name="code.name.monkey.retromusic.fragments.downloader.DownloaderMainFragment"/>
+
+    <fragment
+        android:id="@+id/download_search_fragment"
+        android:name="code.name.monkey.retromusic.fragments.downloader.DownloaderSearchFragment"/>
 </navigation>

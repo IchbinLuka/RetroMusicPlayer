@@ -101,7 +101,7 @@ class DownloaderViewModel : ViewModel() {
                 notification
                     .setProgress(0, 0, false)
                     .setContentTitle(context.getString(R.string.notification_finished))
-                showProgress(id, "Finished", 0, 0, notificationManager, context, builder)
+                notificationManager.notify(id, notification.build())
                 val info = YoutubeDL.getInstance().getInfo(request)
                 val index = response.out.lastIndexOf(DESTINATION_TERM) + DESTINATION_TERM.length + 1
                 val path = response.out.substring(startIndex = index).takeWhile { it != '\n' }
@@ -125,29 +125,6 @@ class DownloaderViewModel : ViewModel() {
                 downloading = false
             }
         }
-    }
-    // TODO: remove this method
-    private fun showProgress(
-        id: Int,
-        name: String,
-        progress: Int,
-        progressMax: Int,
-        notificationManager: NotificationManager?,
-        context: Context,
-        builder: NotificationCompat.Builder
-    ) {
-        val notification = NotificationCompat.Builder(
-            context,
-            DownloaderFragment.NOTIFICATION_CHANNEL_ID
-        )
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setSmallIcon(R.drawable.ic_download_music)
-            .setContentTitle(name)
-            .setProgress(progressMax, progress, false)
-            .build()
-        notificationManager?.notify(id, notification)
-        //notificationManager.notify(id, builder.build())
-
     }
 
     fun searchVideos(search: String): Unit {

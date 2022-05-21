@@ -154,13 +154,15 @@ class DownloaderFragment : Fragment() {
         }
         val value = model.results.value
         model.results.observeForever {
+            binding.loadingIndicator.visibility = View.GONE
             if (it.successful) {
                 Log.d("Downloader", it.results.toString())
-                binding.loadingIndicator.visibility = View.GONE
                 val adapter: YTSearchAdapter = binding.searchResults.adapter as YTSearchAdapter
                 if (it.results != null) {
                     adapter.update(it.results)
                 }
+            } else {
+                Log.e("Searching", "Searching failed")
             }
         }
         model.downloadResult.observeForever {
