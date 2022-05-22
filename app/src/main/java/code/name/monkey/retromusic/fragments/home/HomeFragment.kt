@@ -103,7 +103,7 @@ class HomeFragment :
 
     private fun adjustPlaylistButtons() {
         val buttons =
-            listOf(binding.history, binding.lastAdded, binding.topPlayed, binding.actionShuffle)
+            listOf(binding.history, binding.lastAdded, binding.topPlayed, binding.actionShuffle, binding.downloadButton)
         buttons.maxOf { it.lineCount }.let { maxLineCount ->
             buttons.forEach { button ->
                 // Set the highest line count to every button for consistency
@@ -119,6 +119,7 @@ class HomeFragment :
             findNavController().navigate(
                 R.id.download_fragment
             )
+            setSharedAxisYTransitions()
         }
 
         binding.bannerImage?.setOnClickListener {

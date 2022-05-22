@@ -23,6 +23,7 @@ import code.name.monkey.retromusic.databinding.FragmentDownloadMainBinding
 import code.name.monkey.retromusic.databinding.FragmentDownloadSearchResultsBinding
 import code.name.monkey.retromusic.extensions.applyToolbar
 import code.name.monkey.retromusic.extensions.dip
+import code.name.monkey.retromusic.extensions.elevatedAccentColor
 import code.name.monkey.retromusic.fragments.downloader.DownloaderFragment.Companion.NOTIFICATION_CHANNEL_ID
 import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import code.name.monkey.retromusic.util.DownloaderUtil
@@ -41,32 +42,10 @@ class DownloaderSearchFragment : Fragment() {
     private var resultData: List<SearchResult> = listOf()
     private val adapter = YTSearchAdapter(resultData) {
         if (!viewModel.downloading) {
-            download(it)
+            context?.let { it1 -> viewModel.download(it, it1) } ?: Log.e(TAG, "Context must not be null")
         }
     }
 
-    private fun download(url: String) {
-        YoutubeDL.getInstance().init(context)
-        FFmpeg.getInstance().init(context)
-        val data = Data.Builder()
-            .putString(DownloadWorker.CHANNEL_ID_KEY, NOTIFICATION_CHANNEL_ID)
-            .putString("url", url)
-            .build()
-        val request = OneTimeWorkRequestBuilder<DownloadWorker>().setInputData(data).build()
-        context?.let {
-            val workManager = WorkManager.getInstance(it)
-            workManager.enqueue(request)
-            workManager.getWorkInfoByIdLiveData(request.id).observe(this) { info ->
-                val uri = info.outputData.getString("uri")
-                val author = info.outputData.getString("author")
-                val title = info.outputData.getString("title")
-                if (uri != null) {
-                    val tagEditorIntent = DownloaderUtil.getTagEditorIntent(title, author, uri, it)
-                    activity?.startActivity(tagEditorIntent)
-                }
-            }
-        } ?: Log.e(TAG, "Context is null")
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,12 +58,16 @@ class DownloaderSearchFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        checkForPadding()
+    }
+
     private fun setUpViews() {
         applyToolbar(binding.toolbar)
         viewModel.searchTerm?.let {
             binding.searchView.setText(it)
         }
-        checkForPadding()
         binding.searchResults.layoutManager = LinearLayoutManager(context)
         val results = viewModel.results.value
         results?.let {
@@ -93,6 +76,7 @@ class DownloaderSearchFragment : Fragment() {
             }
         }
         binding.loadingIndicator.visibility = View.VISIBLE
+        binding.loadingIndicator.elevatedAccentColor()
     }
 
     private fun setUpListeners() {

@@ -2,6 +2,7 @@ package code.name.monkey.retromusic.fragments.downloader
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,12 +19,15 @@ import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.databinding.FragmentDownloadMainBinding
 import code.name.monkey.retromusic.databinding.FragmentDownloaderBinding
 import code.name.monkey.retromusic.extensions.*
+import code.name.monkey.retromusic.util.PreferenceUtil
 
 class DownloaderMainFragment : Fragment() {
     private var _binding: FragmentDownloadMainBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: DownloaderViewModel by activityViewModels()
+
+    private val googleApiKeyConfigured: Boolean = PreferenceUtil.googleDataApiKey ?: "" != ""
 
 
     override fun onCreateView(
@@ -48,6 +52,10 @@ class DownloaderMainFragment : Fragment() {
             val backgroundColor = ColorUtil.withAlpha(it.accentColor(), 0.12f)
             binding.searchContainer.backgroundTintList = ColorStateList.valueOf(backgroundColor)
         }
+        //binding.searchBar.setText("test")
+        if (!googleApiKeyConfigured) {
+            binding.googleApiWarning.visibility = View.VISIBLE
+        }
     }
 
     private fun setUpListeners() {
@@ -65,11 +73,23 @@ class DownloaderMainFragment : Fragment() {
             var out = false
             if (id == EditorInfo.IME_ACTION_SEARCH) {
                 binding.searchBar.onEditorAction(EditorInfo.IME_ACTION_DONE)
-                viewModel.searchVideos(binding.searchBar.text.toString())
-                findNavController().navigate(R.id.download_search_fragment)
+                val text = binding.searchBar.text.toString()
+                if (text.contains("https://") || !googleApiKeyConfigured) {
+                    context?.let {
+                        viewModel.download(text, it)
+                    } ?: Log.e(TAG, "context must not be null")
+                } else {
+                    viewModel.searchVideos(text)
+                    findNavController().navigate(R.id.download_search_fragment)
+                }
+                binding.searchBar.text?.clear()
                 out = true
             }
             out
         }
+    }
+
+    companion object {
+        const val TAG = "DownloaderMainFragment"
     }
 }

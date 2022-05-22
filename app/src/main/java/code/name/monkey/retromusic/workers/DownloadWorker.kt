@@ -14,6 +14,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import code.name.monkey.retromusic.R
+import code.name.monkey.retromusic.activities.tageditor.AbsTagEditorActivity
 import code.name.monkey.retromusic.activities.tageditor.SongTagEditorActivity
 import code.name.monkey.retromusic.util.DownloaderUtil
 import com.yausername.youtubedl_android.YoutubeDL
@@ -43,7 +44,7 @@ class DownloadWorker(
         channelId
     )
         .setPriority(NotificationCompat.PRIORITY_HIGH)
-        .setContentTitle("Downloading")
+        .setContentTitle(applicationContext.getString(R.string.notification_downloading))
         .setOnlyAlertOnce(true)
         .setProgress(100, 0, false)
         .setAutoCancel(true)
@@ -56,7 +57,7 @@ class DownloadWorker(
         notificationManager.notify(0, notification.build())
 
 
-        val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "downloader")
+        val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "music")
         val url = inputData.getString("url")
         if (url != "" && url != null) {
             val requestUrl = if (url.contains("https://")) { url } else { "ytsearch:\"$url\"" }
@@ -71,7 +72,7 @@ class DownloadWorker(
             }
             withContext(Dispatchers.IO) {
                 try {
-                    val info = ytDL.getInfo(url)
+                    val info = ytDL.getInfo(requestUrl)
                     notification.setContentTitle(applicationContext.getString(R.string.notification_downloading, info.title))
                     updateNotification()
                     val response = ytDL.execute(request) {
@@ -96,14 +97,16 @@ class DownloadWorker(
                     MediaScannerConnection.scanFile(applicationContext, arrayOf(path), null) { s, uri ->
                         val intent = DownloaderUtil.getTagEditorIntent(info.title, info.uploader, path, applicationContext)
                         val flags = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                            PendingIntent.FLAG_IMMUTABLE
+                            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                         } else {
-                            0
+                            PendingIntent.FLAG_UPDATE_CURRENT
                         }
+                        Log.d(TAG, intent.getStringExtra(AbsTagEditorActivity.TITLE_ID).toString())
                         notification.apply {
                             setProgress(0, 0, false)
                             setContentIntent(PendingIntent.getActivity(applicationContext, 0, intent, flags, null))
-                            setContentTitle("Finished")
+                            setContentTitle(applicationContext.getString(R.string.notification_finished))
+                            setContentText(applicationContext.getString(R.string.tap_to_open_in_tag_editor))
                             setOnlyAlertOnce(false)
                         }
                         updateNotification()
@@ -113,6 +116,7 @@ class DownloadWorker(
                         .putString("title", info.title)
                         .putString("author", info.uploader)
                         .build()
+                    Log.d(TAG, data.toString())
                     return@withContext Result.success(data)
 
                 } catch (e: Exception) {

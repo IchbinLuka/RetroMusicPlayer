@@ -538,6 +538,8 @@
     <string name="download_fragment_name">Download Music</string>
     <string name="notification_downloading">Downloading %1$s</string>
     <string name="notification_finished">Finished</string>
+    <string name="search_term_or_link">Search Term or Link</string>
+    <string name="tap_to_open_in_tag_editor">Tap to open in Tag Editor</string>
     <string name="pref_title_api_key">Google Data API Key</string>
     <string name="no_google_api_key_warning">No Google Data API Key configured. Searching for videos unavailable</string>
     <string name="bug_report_success">Bug report successful</string>

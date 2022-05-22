@@ -10,12 +10,17 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.util.PreferenceUtil
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.youtube.YouTube
 import com.google.api.services.youtube.model.SearchResult
+import com.ichbinluka.downloader.workers.DownloadWorker
+import com.yausername.ffmpeg.FFmpeg
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLException
 import com.yausername.youtubedl_android.YoutubeDLRequest
@@ -53,6 +58,29 @@ class DownloaderViewModel : ViewModel() {
     companion object {
         const val DEBUG_TAG = "Downloader ViewModel"
         private const val DESTINATION_TERM = "Destination:"
+    }
+
+    fun download(url: String, context: Context) {
+        YoutubeDL.getInstance().init(context)
+        FFmpeg.getInstance().init(context)
+        val data = Data.Builder()
+            .putString(DownloadWorker.CHANNEL_ID_KEY, DownloaderFragment.NOTIFICATION_CHANNEL_ID)
+            .putString("url", url)
+            .build()
+        val request = OneTimeWorkRequestBuilder<DownloadWorker>().setInputData(data).build()
+        context.let {
+            val workManager = WorkManager.getInstance(it)
+            workManager.enqueue(request)
+            /*workManager.getWorkInfoByIdLiveData(request.id).observe(this) { info ->
+                    val uri = info.outputData.getString("uri")
+                    val author = info.outputData.getString("author")
+                    val title = info.outputData.getString("title")
+                    if (uri != null) {
+                        val tagEditorIntent = DownloaderUtil.getTagEditorIntent(title, author, uri, it)
+                        activity?.startActivity(tagEditorIntent)
+                    }
+                }*/
+        } ?: Log.e(DownloaderSearchFragment.TAG, "Context is null")
     }
 
 
