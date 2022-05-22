@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import code.name.monkey.appthemehelper.ThemeStore
 import code.name.monkey.appthemehelper.util.ColorUtil
@@ -21,7 +23,7 @@ class DownloaderMainFragment : Fragment() {
     private var _binding: FragmentDownloadMainBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: DownloaderViewModel by viewModels()
+    private val viewModel: DownloaderViewModel by activityViewModels()
 
 
     override fun onCreateView(

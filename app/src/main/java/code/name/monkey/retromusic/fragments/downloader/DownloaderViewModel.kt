@@ -11,8 +11,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import code.name.monkey.retromusic.R
-import code.name.monkey.retromusic.networkModule
-import code.name.monkey.retromusic.repository.RealRepository
 import code.name.monkey.retromusic.util.PreferenceUtil
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.json.jackson2.JacksonFactory
@@ -23,7 +21,6 @@ import com.yausername.youtubedl_android.YoutubeDLException
 import com.yausername.youtubedl_android.YoutubeDLRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
 import java.io.File
 import java.lang.Exception
 
@@ -48,6 +45,10 @@ class DownloaderViewModel : ViewModel() {
     }
 
     private var service: YouTube? = null
+
+    private var _searchTerm: String? = null
+
+    val searchTerm: String? get() = _searchTerm
 
     companion object {
         const val DEBUG_TAG = "Downloader ViewModel"
@@ -127,8 +128,10 @@ class DownloaderViewModel : ViewModel() {
         }
     }
 
-    fun searchVideos(search: String): Unit {
+    fun searchVideos(search: String) {
+        _searchTerm = search
         viewModelScope.launch(Dispatchers.IO) {
+            Log.d("Downloader", "Searching for $search")
             if (service == null) {
                 val transport = AndroidHttp.newCompatibleTransport()
                 val jsonFactory = JacksonFactory.getDefaultInstance()

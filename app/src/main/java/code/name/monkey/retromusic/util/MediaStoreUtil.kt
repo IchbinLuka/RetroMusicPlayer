@@ -11,8 +11,7 @@ import android.provider.MediaStore
 import java.io.File
 import java.util.*
 import android.content.Intent
-
-
+import androidx.core.content.ContentProviderCompat.requireContext
 
 
 class MediaStoreUtil {
@@ -51,6 +50,25 @@ class MediaStoreUtil {
                 )!!
             }*/
             context.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)))
+        }
+
+        public fun getSongId(path: String, context: Context): Long {
+            val cr = context.contentResolver
+            val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+            val selection: String = MediaStore.Audio.Media.DATA
+            val selArgs = arrayOf(path)
+            val projection = arrayOf(MediaStore.Audio.Media._ID)
+
+            val values = ContentValues()
+            values.put(MediaStore.Audio.Media.DATA, path)
+
+            val cursor = cr.query(uri, projection, "$selection=?", selArgs, null)
+            var songId: Long = 0
+            if (cursor != null && cursor.moveToFirst()) {
+                val idIndex = cursor.getColumnIndex(MediaStore.Audio.Media._ID)
+                songId = cursor.getString(idIndex).toLong()
+            }
+            return songId
         }
     }
 }
