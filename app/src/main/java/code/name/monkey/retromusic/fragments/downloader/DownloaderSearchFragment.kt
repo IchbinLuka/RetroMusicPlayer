@@ -7,10 +7,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
@@ -92,6 +95,33 @@ class DownloaderSearchFragment : Fragment() {
             } else {
                 Log.e(TAG, "Searching failed")
             }
+        }
+        binding.clearText.setOnClickListener {
+            binding.searchView.text?.clear()
+        }
+        binding.searchView.addTextChangedListener {
+            if (it != null && it.isNotEmpty()) {
+                binding.clearText.visibility = View.VISIBLE
+            } else if (binding.clearText.visibility == View.VISIBLE) {
+                binding.clearText.visibility = View.INVISIBLE
+            }
+        }
+        binding.searchView.setOnEditorActionListener { _, id, _ ->
+            var out = false
+            if (id == EditorInfo.IME_ACTION_SEARCH) {
+                binding.searchView.onEditorAction(EditorInfo.IME_ACTION_DONE)
+                val text = binding.searchView.text.toString()
+                if (text.contains("https://") || !viewModel.googleApiKeyConfigured) {
+                    context?.let {
+                        viewModel.download(text, it)
+                    } ?: Log.e(DownloaderMainFragment.TAG, "context must not be null")
+                } else {
+                    viewModel.searchVideos(text)
+                }
+                binding.searchView.text?.clear()
+                out = true
+            }
+            out
         }
     }
 

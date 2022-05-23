@@ -27,8 +27,6 @@ class DownloaderMainFragment : Fragment() {
 
     private val viewModel: DownloaderViewModel by activityViewModels()
 
-    private val googleApiKeyConfigured: Boolean = PreferenceUtil.googleDataApiKey ?: "" != ""
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,7 +51,7 @@ class DownloaderMainFragment : Fragment() {
             binding.searchContainer.backgroundTintList = ColorStateList.valueOf(backgroundColor)
         }
         //binding.searchBar.setText("test")
-        if (!googleApiKeyConfigured) {
+        if (!viewModel.googleApiKeyConfigured) {
             binding.googleApiWarning.visibility = View.VISIBLE
         }
     }
@@ -74,7 +72,7 @@ class DownloaderMainFragment : Fragment() {
             if (id == EditorInfo.IME_ACTION_SEARCH) {
                 binding.searchBar.onEditorAction(EditorInfo.IME_ACTION_DONE)
                 val text = binding.searchBar.text.toString()
-                if (text.contains("https://") || !googleApiKeyConfigured) {
+                if (text.contains("https://") || !viewModel.googleApiKeyConfigured) {
                     context?.let {
                         viewModel.download(text, it)
                     } ?: Log.e(TAG, "context must not be null")

@@ -37,6 +37,8 @@ class DownloaderViewModel : ViewModel() {
 
     var downloading: Boolean = false
 
+    public val googleApiKeyConfigured: Boolean get() = PreferenceUtil.googleDataApiKey ?: "" != ""
+
     val results: MutableLiveData<DownloaderSearchResult> by lazy {
         MutableLiveData<DownloaderSearchResult>(DownloaderSearchResult(false, listOf()))
     }
