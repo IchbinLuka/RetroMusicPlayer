@@ -31,6 +31,7 @@ import code.name.monkey.retromusic.fragments.downloader.DownloaderFragment.Compa
 import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import code.name.monkey.retromusic.util.DownloaderUtil
 import code.name.monkey.retromusic.util.MediaStoreUtil
+import code.name.monkey.retromusic.util.SearchActionUtil
 import com.google.api.services.youtube.model.SearchResult
 import com.ichbinluka.downloader.workers.DownloadWorker
 import com.yausername.ffmpeg.FFmpeg
@@ -106,7 +107,7 @@ class DownloaderSearchFragment : Fragment() {
                 binding.clearText.visibility = View.INVISIBLE
             }
         }
-        binding.searchView.setOnEditorActionListener { _, id, _ ->
+        /*binding.searchView.setOnEditorActionListener { _, id, _ ->
             var out = false
             if (id == EditorInfo.IME_ACTION_SEARCH) {
                 binding.searchView.onEditorAction(EditorInfo.IME_ACTION_DONE)
@@ -122,7 +123,8 @@ class DownloaderSearchFragment : Fragment() {
                 out = true
             }
             out
-        }
+        }*/
+        SearchActionUtil.configureSearchBar(binding.searchView, viewModel, context)
     }
 
     private fun checkForPadding() {
