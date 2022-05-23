@@ -20,14 +20,13 @@ import code.name.monkey.retromusic.databinding.FragmentDownloadMainBinding
 import code.name.monkey.retromusic.databinding.FragmentDownloaderBinding
 import code.name.monkey.retromusic.extensions.*
 import code.name.monkey.retromusic.util.PreferenceUtil
+import code.name.monkey.retromusic.util.SearchActionUtil
 
 class DownloaderMainFragment : Fragment() {
     private var _binding: FragmentDownloadMainBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: DownloaderViewModel by activityViewModels()
-
-    private val googleApiKeyConfigured: Boolean = PreferenceUtil.googleDataApiKey ?: "" != ""
 
 
     override fun onCreateView(
@@ -53,7 +52,7 @@ class DownloaderMainFragment : Fragment() {
             binding.searchContainer.backgroundTintList = ColorStateList.valueOf(backgroundColor)
         }
         //binding.searchBar.setText("test")
-        if (!googleApiKeyConfigured) {
+        if (!viewModel.googleApiKeyConfigured) {
             binding.googleApiWarning.visibility = View.VISIBLE
         }
     }
@@ -69,12 +68,12 @@ class DownloaderMainFragment : Fragment() {
                 binding.clearText.visibility = View.INVISIBLE
             }
         }
-        binding.searchBar.setOnEditorActionListener { _, id, _ ->
+        /*binding.searchBar.setOnEditorActionListener { _, id, _ ->
             var out = false
             if (id == EditorInfo.IME_ACTION_SEARCH) {
                 binding.searchBar.onEditorAction(EditorInfo.IME_ACTION_DONE)
                 val text = binding.searchBar.text.toString()
-                if (text.contains("https://") || !googleApiKeyConfigured) {
+                if (text.contains("https://") || !viewModel.googleApiKeyConfigured) {
                     context?.let {
                         viewModel.download(text, it)
                     } ?: Log.e(TAG, "context must not be null")
@@ -86,7 +85,10 @@ class DownloaderMainFragment : Fragment() {
                 out = true
             }
             out
-        }
+        }*/
+        SearchActionUtil.configureSearchBar(binding.searchBar, viewModel, context, {
+            findNavController().navigate(R.id.download_search_fragment)
+        })
     }
 
     companion object {
