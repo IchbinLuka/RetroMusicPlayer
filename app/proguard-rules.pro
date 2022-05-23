@@ -69,3 +69,4 @@
 -keep class code.name.monkey.retromusic.network.model.** { *; }
 -keep class code.name.monkey.retromusic.model.** { *; }
 -keep class com.google.android.material.bottomsheet.** { *; }
+-keep class com.google.api.** { *; }
