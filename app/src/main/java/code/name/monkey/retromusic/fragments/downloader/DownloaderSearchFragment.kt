@@ -107,24 +107,12 @@ class DownloaderSearchFragment : Fragment() {
                 binding.clearText.visibility = View.INVISIBLE
             }
         }
-        /*binding.searchView.setOnEditorActionListener { _, id, _ ->
-            var out = false
-            if (id == EditorInfo.IME_ACTION_SEARCH) {
-                binding.searchView.onEditorAction(EditorInfo.IME_ACTION_DONE)
-                val text = binding.searchView.text.toString()
-                if (text.contains("https://") || !viewModel.googleApiKeyConfigured) {
-                    context?.let {
-                        viewModel.download(text, it)
-                    } ?: Log.e(DownloaderMainFragment.TAG, "context must not be null")
-                } else {
-                    viewModel.searchVideos(text)
-                }
-                binding.searchView.text?.clear()
-                out = true
-            }
-            out
-        }*/
-        SearchActionUtil.configureSearchBar(binding.searchView, viewModel, context)
+        SearchActionUtil.configureSearchBar(binding.searchView, viewModel, context) {
+            // onSearch
+            val adapter = binding.searchResults.adapter as YTSearchAdapter
+            adapter.update(listOf())
+            binding.loadingIndicator.visibility = View.VISIBLE
+        }
     }
 
     private fun checkForPadding() {
