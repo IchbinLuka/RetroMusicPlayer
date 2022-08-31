@@ -6,18 +6,22 @@ import android.content.Intent
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.media.PlaybackParams
 import android.media.audiofx.AudioEffect
 import android.os.PowerManager
 import android.util.Log
-import android.widget.Toast
 import androidx.core.net.toUri
+import code.name.monkey.appthemehelper.util.VersionUtils.hasMarshmallow
 import code.name.monkey.retromusic.R
+import code.name.monkey.retromusic.extensions.showToast
 import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import code.name.monkey.retromusic.service.AudioFader.Companion.createFadeAnimator
 import code.name.monkey.retromusic.service.playback.Playback
 import code.name.monkey.retromusic.service.playback.Playback.PlaybackCallbacks
 import code.name.monkey.retromusic.util.MusicUtil
 import code.name.monkey.retromusic.util.PreferenceUtil
+import code.name.monkey.retromusic.util.PreferenceUtil.playbackPitch
+import code.name.monkey.retromusic.util.PreferenceUtil.playbackSpeed
 import kotlinx.coroutines.*
 
 /** @author Prathamesh M */
@@ -120,20 +124,9 @@ class CrossFadePlayer(val context: Context) : Playback, MediaPlayer.OnCompletion
     override val isPlaying: Boolean
         get() = mIsInitialized && getCurrentPlayer()?.isPlaying == true
 
-    // This has to run when queue is changed or song is changed manually by user
-    fun sourceChangedByUser() {
-        hasDataSource = false
+    override fun setDataSource(path: String, force: Boolean): Boolean {
         cancelFade()
-        getCurrentPlayer()?.apply {
-            if (isPlaying) stop()
-        }
-        getNextPlayer()?.apply {
-            if (isPlaying) stop()
-        }
-    }
-
-    override fun setDataSource(path: String): Boolean {
-        cancelFade()
+        if (force) hasDataSource = false
         mIsInitialized = false
         /* We've already set DataSource if initialized is true in setNextDataSource */
         if (!hasDataSource) {
@@ -149,12 +142,12 @@ class CrossFadePlayer(val context: Context) : Playback, MediaPlayer.OnCompletion
 
     /**
      * @param player The {@link MediaPlayer} to use
-     * @param path   The path of the file, or the http/rtsp URL of the stream you want to play
+     * @param path The path of the file, or the http/rtsp URL of the stream you want to play
      * @return True if the <code>player</code> has been prepared and is ready to play, false otherwise
      */
     private fun setDataSourceImpl(
         player: MediaPlayer,
-        path: String
+        path: String,
     ): Boolean {
         player.reset()
         player.setOnPreparedListener(null)
@@ -168,6 +161,7 @@ class CrossFadePlayer(val context: Context) : Playback, MediaPlayer.OnCompletion
                 AudioAttributes.Builder().setLegacyStreamType(AudioManager.STREAM_MUSIC).build()
             )
             player.prepare()
+            player.setPlaybackSpeedPitch(playbackSpeed, playbackPitch)
         } catch (e: Exception) {
             e.printStackTrace()
             return false
@@ -291,12 +285,7 @@ class CrossFadePlayer(val context: Context) : Playback, MediaPlayer.OnCompletion
         player2 = MediaPlayer()
         mIsInitialized = true
         mp?.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
-        Toast.makeText(
-            context,
-            context.resources.getString(R.string.unplayable_file),
-            Toast.LENGTH_SHORT
-        )
-            .show()
+        context.showToast(R.string.unplayable_file)
         Log.e(TAG, what.toString() + extra)
         return false
     }
@@ -355,6 +344,20 @@ class CrossFadePlayer(val context: Context) : Playback, MediaPlayer.OnCompletion
 
     override fun setCrossFadeDuration(duration: Int) {
         crossFadeDuration = duration
+    }
+
+    override fun setPlaybackSpeedPitch(speed: Float, pitch: Float) {
+        getCurrentPlayer()?.setPlaybackSpeedPitch(speed, pitch)
+    }
+
+    private fun MediaPlayer.setPlaybackSpeedPitch(speed: Float, pitch: Float) {
+        if (hasMarshmallow()) {
+            val wasPlaying: Boolean = isPlaying
+            playbackParams = PlaybackParams().setSpeed(speed).setPitch(pitch)
+            if (!wasPlaying) {
+                if (isPlaying) pause()
+            }
+        }
     }
 
     companion object {

@@ -54,7 +54,7 @@
     <string name="add_action">追加</string>
     <string name="add_playlist_title">"プレイリストに追加"</string>
     <string name="add_time_framed_lryics">時間指定の歌詞を追加</string>
-    <string name="added_song_count_to_playlist">Added %d song(s) to %s</string>
+    <string name="added_song_count_to_playlist">Added %1$d song(s) to %2$s</string>
     <string name="added_title_to_playing_queue">"1曲が再生キューに追加されました"</string>
     <string name="added_x_titles_to_playing_queue">%1$d 曲が再生キューに追加されました</string>
     <string name="album">アルバム</string>
@@ -347,6 +347,7 @@
     <string name="pref_summary_toggle_volume">再生画面に十分なスペースがある場合に音量コントロールを追加する</string>
     <string name="pref_summary_wallpaper_accent">Extract accent color from wallpaper</string>
     <string name="pref_summary_whitelist">Only show music from /Music Folder</string>
+    <string name="pref_summary_manage_audio_focus">Always play audio in background regardless of anything else being played</string>
     <string name="pref_title_album_art_on_lockscreen">アルバムジャケットを表示</string>
     <string name="pref_title_album_artists_only">アルバムのアーティストを表示</string>
     <string name="pref_title_album_cover_style">アルバムカバーのテーマ</string>
@@ -394,6 +395,7 @@
     <string name="pref_title_toggle_volume">ボリュームコントロール</string>
     <string name="pref_title_wallpaper_accent">Wallpaper accent color</string>
     <string name="pref_title_whitelist">Whitelist music</string>
+    <string name="pref_title_manage_audio_focus">Always play</string>
     <string name="pro">Pro</string>
     <string name="pro_summary">Black theme, Now playing themes, Carousel effect and more..</string>
     <string name="profile">プロフィール</string>
@@ -531,4 +533,5 @@
     <string name="you_have_to_select_at_least_one_category">少なくとも 1 つのカテゴリを選択する必要があります。</string>
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">issue trackerのウェブサイトに移動します</string>
     <string name="your_account_data_is_only_used_for_authentication">あなたのアカウントは認証にのみ使用されます</string>
+    <string name="bug_report_success">Bug report successful</string>
 </resources>

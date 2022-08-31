@@ -74,4 +74,6 @@
     <dimen name="seekbar_padding">16dp</dimen>
 
     <dimen name="download_fragment_icon_size">100dp</dimen>
+    <dimen name="cast_mini_controller_height">64dp</dimen>
+    <dimen name="cast_mini_controller_image_size">48dp</dimen>
 </resources>

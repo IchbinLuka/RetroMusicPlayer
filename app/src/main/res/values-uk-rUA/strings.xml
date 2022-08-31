@@ -54,7 +54,7 @@
     <string name="add_action">Додати</string>
     <string name="add_playlist_title">"Додати до списку відтворення"</string>
     <string name="add_time_framed_lryics">Додати часові розмежування тексту</string>
-    <string name="added_song_count_to_playlist">Added %d song(s) to %s</string>
+    <string name="added_song_count_to_playlist">Added %1$d song(s) to %2$s</string>
     <string name="added_title_to_playing_queue">"Додано 1 композицію до черги відтворення."</string>
     <string name="added_x_titles_to_playing_queue">Додано %1$d композицій до черги відтворення.</string>
     <string name="album">Альбом</string>
@@ -352,6 +352,7 @@
     <string name="pref_summary_toggle_volume">Якщо вистачає місця, показувати панель гучності на екрані відтворення</string>
     <string name="pref_summary_wallpaper_accent">Extract accent color from wallpaper</string>
     <string name="pref_summary_whitelist">Only show music from /Music Folder</string>
+    <string name="pref_summary_manage_audio_focus">Always play audio in background regardless of anything else being played</string>
     <string name="pref_title_album_art_on_lockscreen">Показати обкладинку альбому</string>
     <string name="pref_title_album_artists_only">Navigate by Album Artist</string>
     <string name="pref_title_album_cover_style">Тема обкладинки альбому</string>
@@ -399,6 +400,7 @@
     <string name="pref_title_toggle_volume">Регулювання гучності</string>
     <string name="pref_title_wallpaper_accent">Wallpaper accent color</string>
     <string name="pref_title_whitelist">Whitelist music</string>
+    <string name="pref_title_manage_audio_focus">Always play</string>
     <string name="pro">Pro</string>
     <string name="pro_summary">Чорна тема, теми відтворення, ефект каруселі та інше..</string>
     <string name="profile">Профіль</string>
@@ -536,4 +538,5 @@
     <string name="you_have_to_select_at_least_one_category">Виберіть принаймні одну категорію.</string>
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">Вас буде перенаправлено на сайт відстеження проблем.</string>
     <string name="your_account_data_is_only_used_for_authentication">Дані вашого облікового запису використовуються лише для автентифікації.</string>
+    <string name="bug_report_success">Bug report successful</string>
 </resources>

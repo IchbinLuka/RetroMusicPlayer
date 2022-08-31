@@ -29,9 +29,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.core.app.ActivityCompat
 import androidx.core.content.getSystemService
-import code.name.monkey.appthemehelper.ThemeStore
 import code.name.monkey.appthemehelper.util.VersionUtils
 import code.name.monkey.retromusic.R
+import code.name.monkey.retromusic.extensions.accentColor
 import com.google.android.material.snackbar.Snackbar
 
 abstract class AbsBaseActivity : AbsThemeActivity() {
@@ -90,17 +90,15 @@ abstract class AbsBaseActivity : AbsThemeActivity() {
     }
 
     protected open fun requestPermissions() {
-        if (VersionUtils.hasMarshmallow()) {
-            requestPermissions(permissions, PERMISSION_REQUEST)
-        }
+        ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUEST)
     }
 
     protected fun hasPermissions(): Boolean {
-        if (VersionUtils.hasMarshmallow()) {
-            for (permission in permissions) {
-                if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false
-                }
+        for (permission in permissions) {
+            if (ActivityCompat.checkSelfPermission(this,
+                    permission) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return false
             }
         }
         return true
@@ -109,7 +107,7 @@ abstract class AbsBaseActivity : AbsThemeActivity() {
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST) {
@@ -126,24 +124,41 @@ abstract class AbsBaseActivity : AbsThemeActivity() {
                             Snackbar.LENGTH_INDEFINITE
                         )
                             .setAction(R.string.action_grant) { requestPermissions() }
-                            .setActionTextColor(ThemeStore.accentColor(this)).show()
+                            .setActionTextColor(accentColor()).show()
+                    } else if (ActivityCompat.shouldShowRequestPermissionRationale(
+                            this@AbsBaseActivity, Manifest.permission.BLUETOOTH_CONNECT
+                        )
+                    ) {
+                        // User has deny from permission dialog
+                        Snackbar.make(
+                            snackBarContainer,
+                            R.string.permission_bluetooth_denied,
+                            Snackbar.LENGTH_INDEFINITE
+                        )
+                            .setAction(R.string.action_grant) {
+                                ActivityCompat.requestPermissions(this,
+                                    arrayOf(Manifest.permission.BLUETOOTH_CONNECT),
+                                    PERMISSION_REQUEST)
+                            }
+                            .setActionTextColor(accentColor()).show()
                     } else {
                         // User has deny permission and checked never show permission dialog so you can redirect to Application settings page
                         Snackbar.make(
                             snackBarContainer,
                             permissionDeniedMessage!!,
                             Snackbar.LENGTH_INDEFINITE
-                        ).setAction(R.string.action_settings) {
-                            val intent = Intent()
-                            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                            val uri = Uri.fromParts(
-                                "package",
-                                this@AbsBaseActivity.packageName,
-                                null
-                            )
-                            intent.data = uri
-                            startActivity(intent)
-                        }.setActionTextColor(ThemeStore.accentColor(this)).show()
+                        )
+                            .setAction(R.string.action_settings) {
+                                val intent = Intent()
+                                intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                                val uri = Uri.fromParts(
+                                    "package",
+                                    this@AbsBaseActivity.packageName,
+                                    null
+                                )
+                                intent.data = uri
+                                startActivity(intent)
+                            }.setActionTextColor(accentColor()).show()
                     }
                     return
                 }
@@ -156,7 +171,8 @@ abstract class AbsBaseActivity : AbsThemeActivity() {
     companion object {
         const val PERMISSION_REQUEST = 100
     }
-    // this  lets keyboard close when clicked in backgroud
+
+    // this lets keyboard close when clicked in background
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_DOWN) {
             val v = currentFocus
@@ -165,7 +181,10 @@ abstract class AbsBaseActivity : AbsThemeActivity() {
                 v.getGlobalVisibleRect(outRect)
                 if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
                     v.clearFocus()
-                    getSystemService<InputMethodManager>()?.hideSoftInputFromWindow(v.windowToken, 0)
+                    getSystemService<InputMethodManager>()?.hideSoftInputFromWindow(
+                        v.windowToken,
+                        0
+                    )
                 }
             }
         }

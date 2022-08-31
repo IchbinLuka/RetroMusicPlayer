@@ -18,6 +18,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.KeyEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
@@ -28,12 +29,14 @@ import code.name.monkey.retromusic.LanguageContextWrapper
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.extensions.*
 import code.name.monkey.retromusic.util.PreferenceUtil
-import code.name.monkey.retromusic.util.theme.ThemeManager
+import code.name.monkey.retromusic.util.theme.getNightMode
+import code.name.monkey.retromusic.util.theme.getThemeResValue
+import com.google.android.play.core.splitcompat.SplitCompat
 import java.util.*
 
 abstract class AbsThemeActivity : ATHToolbarActivity(), Runnable {
 
-    private val handler = Handler()
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         updateTheme()
@@ -50,9 +53,9 @@ abstract class AbsThemeActivity : ATHToolbarActivity(), Runnable {
     }
 
     private fun updateTheme() {
-        setTheme(ThemeManager.getThemeResValue())
+        setTheme(getThemeResValue())
         if (PreferenceUtil.materialYou) {
-            setDefaultNightMode(ThemeManager.getNightMode())
+            setDefaultNightMode(getNightMode())
         }
 
         if (PreferenceUtil.isCustomFont) {
@@ -120,5 +123,6 @@ abstract class AbsThemeActivity : ATHToolbarActivity(), Runnable {
             Locale.forLanguageTag(code)
         }
         super.attachBaseContext(LanguageContextWrapper.wrap(newBase, locale))
+        SplitCompat.install(this)
     }
 }

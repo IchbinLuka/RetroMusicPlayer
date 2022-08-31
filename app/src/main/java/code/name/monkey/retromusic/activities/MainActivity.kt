@@ -35,7 +35,6 @@ import code.name.monkey.retromusic.model.Song
 import code.name.monkey.retromusic.repository.PlaylistSongsLoader
 import code.name.monkey.retromusic.service.MusicService
 import code.name.monkey.retromusic.util.AppRater
-import code.name.monkey.retromusic.util.NavigationUtil
 import code.name.monkey.retromusic.util.PreferenceUtil
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -62,9 +61,7 @@ class MainActivity : AbsCastActivity(), OnSharedPreferenceChangeListener {
         if (!hasPermissions()) {
             findNavController(R.id.fragment_container).navigate(R.id.permissionFragment)
         }
-        if (BuildConfig.VERSION_CODE > PreferenceUtil.lastVersion && !BuildConfig.DEBUG) {
-            NavigationUtil.gotoWhatNews(this)
-        }
+        WhatsNewFragment.showChangeLog(this)
     }
 
     private fun setupNavigationController() {
@@ -151,7 +148,7 @@ class MainActivity : AbsCastActivity(), OnSharedPreferenceChangeListener {
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (key == GENERAL_THEME || key == MATERIAL_YOU || key == WALLPAPER_ACCENT || key == BLACK_THEME || key == ADAPTIVE_COLOR_APP || key == USER_NAME || key == TOGGLE_FULL_SCREEN || key == TOGGLE_VOLUME || key == ROUND_CORNERS || key == CAROUSEL_EFFECT || key == NOW_PLAYING_SCREEN_ID || key == TOGGLE_GENRE || key == BANNER_IMAGE_PATH || key == PROFILE_IMAGE_PATH || key == CIRCULAR_ALBUM_ART || key == KEEP_SCREEN_ON || key == TOGGLE_SEPARATE_LINE || key == TOGGLE_HOME_BANNER || key == TOGGLE_ADD_CONTROLS || key == ALBUM_COVER_STYLE || key == HOME_ARTIST_GRID_STYLE || key == ALBUM_COVER_TRANSFORM || key == DESATURATED_COLOR || key == EXTRA_SONG_INFO || key == TAB_TEXT_MODE || key == LANGUAGE_NAME || key == LIBRARY_CATEGORIES || key == CUSTOM_FONT || key == APPBAR_MODE || key == CIRCLE_PLAY_BUTTON) {
+        if (key == GENERAL_THEME || key == MATERIAL_YOU || key == WALLPAPER_ACCENT || key == BLACK_THEME || key == ADAPTIVE_COLOR_APP || key == USER_NAME || key == TOGGLE_FULL_SCREEN || key == TOGGLE_VOLUME || key == ROUND_CORNERS || key == CAROUSEL_EFFECT || key == NOW_PLAYING_SCREEN_ID || key == TOGGLE_GENRE || key == BANNER_IMAGE_PATH || key == PROFILE_IMAGE_PATH || key == CIRCULAR_ALBUM_ART || key == KEEP_SCREEN_ON || key == TOGGLE_SEPARATE_LINE || key == TOGGLE_HOME_BANNER || key == TOGGLE_ADD_CONTROLS || key == ALBUM_COVER_STYLE || key == HOME_ARTIST_GRID_STYLE || key == ALBUM_COVER_TRANSFORM || key == DESATURATED_COLOR || key == EXTRA_SONG_INFO || key == TAB_TEXT_MODE || key == LANGUAGE_NAME || key == LIBRARY_CATEGORIES || key == CUSTOM_FONT || key == APPBAR_MODE || key == CIRCLE_PLAY_BUTTON || key == SWIPE_DOWN_DISMISS) {
             postRecreate()
         }
     }
@@ -179,7 +176,7 @@ class MainActivity : AbsCastActivity(), OnSharedPreferenceChangeListener {
                 handled = true
             }
             if (uri != null && uri.toString().isNotEmpty()) {
-                MusicPlayerRemote.playFromUri(uri)
+                MusicPlayerRemote.playFromUri(this@MainActivity, uri)
                 handled = true
             } else if (MediaStore.Audio.Playlists.CONTENT_TYPE == mimeType) {
                 val id = parseLongFromIntent(intent, "playlistId", "playlist")

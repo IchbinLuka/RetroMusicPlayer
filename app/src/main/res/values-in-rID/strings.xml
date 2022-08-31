@@ -54,7 +54,7 @@
     <string name="add_action">Tambah</string>
     <string name="add_playlist_title">"Tambah ke daftar putar"</string>
     <string name="add_time_framed_lryics">Tambah kerangka waktu pada lirik</string>
-    <string name="added_song_count_to_playlist">Menambah %d lagu ke %s</string>
+    <string name="added_song_count_to_playlist">Menambah %1$d lagu ke %2$s</string>
     <string name="added_title_to_playing_queue">"1 lagu ditambah ke antrean."</string>
     <string name="added_x_titles_to_playing_queue">%1$d lagu telah ditambah ke antrean.</string>
     <string name="album">Album</string>
@@ -172,7 +172,7 @@
     <string name="fit">Paskan</string>
     <string name="flat">Datar</string>
     <string name="folders">Folder</string>
-    <string name="follow_system">Ikuti setelan sistem</string>
+    <string name="follow_system">Ikuti sistem</string>
     <string name="for_you">Untuk Anda</string>
     <string name="free">Gratis</string>
     <string name="full">Penuh</string>
@@ -346,6 +346,7 @@
     <string name="pref_summary_toggle_volume">Jika tersedia cukup ruang, tampilkan kontrol volume di layar pemutaran</string>
     <string name="pref_summary_wallpaper_accent">Ambil warna aksen dari wallpaper</string>
     <string name="pref_summary_whitelist">Tampilkan musik hanya dari folder /Music</string>
+    <string name="pref_summary_manage_audio_focus">Always play audio in background regardless of anything else being played</string>
     <string name="pref_title_album_art_on_lockscreen">Tampilkan sampul album</string>
     <string name="pref_title_album_artists_only">Navigasi berdasarkan Album Artis</string>
     <string name="pref_title_album_cover_style">Tema sampul album</string>
@@ -384,7 +385,7 @@
     <string name="pref_title_remember_tab">Ingat tab terakhir</string>
     <string name="pref_title_show_lyrics">Tampilkan lirik</string>
     <string name="pref_title_suggestions">Tampilkan Saran</string>
-    <string name="pref_title_swipe_anywhere_now_playing">Geser ke mana saja untuk mengubah lagu</string>
+    <string name="pref_title_swipe_anywhere_now_playing">Usap kemana saja untuk mengubah lagu</string>
     <string name="pref_title_tab_text_mode">Mode judul tab</string>
     <string name="pref_title_toggle_carousel_effect">Efek korsel</string>
     <string name="pref_title_toggle_full_screen">Aplikasi layar penuh</string>
@@ -393,6 +394,7 @@
     <string name="pref_title_toggle_volume">Kontrol volume</string>
     <string name="pref_title_wallpaper_accent">Warna aksen wallpaper</string>
     <string name="pref_title_whitelist">Musik daftar putih</string>
+    <string name="pref_title_manage_audio_focus">Always play</string>
     <string name="pro">Pro</string>
     <string name="pro_summary">Tema hitam, Tema yang sedang diputar, efek korsel, dan lainnya...</string>
     <string name="profile">Profil</string>
@@ -530,4 +532,5 @@
     <string name="you_have_to_select_at_least_one_category">Anda harus memilih setidaknya satu kategori.</string>
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">Anda akan ditersukan ke situs web pelacak masalah.</string>
     <string name="your_account_data_is_only_used_for_authentication">Data akun Anda hanya digunakan untuk autentikasi.</string>
+    <string name="bug_report_success">Lapor bug sukses</string>
 </resources>

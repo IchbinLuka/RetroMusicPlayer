@@ -262,8 +262,7 @@ class SongTagEditorActivity : AbsTagEditorActivity<ActivitySongTagEditorBinding>
 
                 override fun onLoadFailed(errorDrawable: Drawable?) {
                     super.onLoadFailed(errorDrawable)
-                    Toast.makeText(this@SongTagEditorActivity, "Load Failed", Toast.LENGTH_LONG)
-                        .show()
+                    showToast(R.string.error_load_failed, Toast.LENGTH_LONG)
                 }
 
                 override fun setResource(resource: BitmapPaletteWrapper?) {}

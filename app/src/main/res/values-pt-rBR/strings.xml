@@ -54,7 +54,7 @@
     <string name="add_action">Adicionar</string>
     <string name="add_playlist_title">"Adicionar à playlist"</string>
     <string name="add_time_framed_lryics">Adicionar Letras Sincronizadas</string>
-    <string name="added_song_count_to_playlist">%d música(s) adicionada(s) para %s</string>
+    <string name="added_song_count_to_playlist">%1$d música(s) adicionada(s) para %2$s</string>
     <string name="added_title_to_playing_queue">"1 música foi adicionada à fila."</string>
     <string name="added_x_titles_to_playing_queue">%1$d músicas foram adicionadas à fila.</string>
     <string name="album">Álbum</string>
@@ -115,7 +115,7 @@
     <string name="cascading">Cascata</string>
     <string name="changelog">Lista de mudanças</string>
     <string name="changelog_summary">Veja o que há de novo</string>
-    <string name="choose_image">Choose Image</string>
+    <string name="choose_image">Escolha a imagem</string>
     <string name="choose_restore_title">Selecione o que será restaurado</string>
     <string name="circle">Círculo</string>
     <string name="circular">Circular</string>
@@ -348,6 +348,7 @@
     <string name="pref_summary_toggle_volume">Se houver espaço suficiente, mostrar os controles de volume na tela de reprodução</string>
     <string name="pref_summary_wallpaper_accent">Extraia a cor de destaque do papel de parede</string>
     <string name="pref_summary_whitelist">Somente mostrar músicas da pasta /Music</string>
+    <string name="pref_summary_manage_audio_focus">Always play audio in background regardless of anything else being played</string>
     <string name="pref_title_album_art_on_lockscreen">Exibir a capa do álbum</string>
     <string name="pref_title_album_artists_only">Navegar pelo Artista do Álbum</string>
     <string name="pref_title_album_cover_style">Tema da capa do álbum</string>
@@ -395,6 +396,7 @@
     <string name="pref_title_toggle_volume">Controles do volume</string>
     <string name="pref_title_wallpaper_accent">Cor de destaque do papel de parede</string>
     <string name="pref_title_whitelist">Lista branca</string>
+    <string name="pref_title_manage_audio_focus">Always play</string>
     <string name="pro">Pro</string>
     <string name="pro_summary">Tema escuro, temas da tela de reprodução, efeito carrossel e mais..</string>
     <string name="profile">Perfil</string>
@@ -407,7 +409,7 @@
     <string name="remove_action">Remover</string>
     <string name="remove_cover">Remover capa</string>
     <string name="remove_from_blacklist">Remover da lista negra</string>
-    <string name="remove_image">Remove Image</string>
+    <string name="remove_image">Remover imagem</string>
     <string name="remove_song_from_playlist_title">Remover música da playlist</string>
     <string name="remove_song_x_from_playlist"><![CDATA[Remover a música <b>%1$s</b> da playlist?]]></string>
     <string name="remove_songs_from_playlist_title">Remover músicas da playlist</string>
@@ -532,4 +534,5 @@
     <string name="you_have_to_select_at_least_one_category">Você precisa selecionar ao menos uma categoria.</string>
     <string name="you_will_be_forwarded_to_the_issue_tracker_website">Você será encaminhado para o website de rastreio de problemas.</string>
     <string name="your_account_data_is_only_used_for_authentication">Os dados da sua conta são usados ​​apenas para autenticação.</string>
+    <string name="bug_report_success">Falha reportada com sucesso</string>
 </resources>
