@@ -9,9 +9,7 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
@@ -126,7 +124,6 @@
                 <data android:mimeType="vnd.android.cursor.dir/audio" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.tageditor.AlbumTagEditorActivity" />
         <activity android:name=".activities.tageditor.SongTagEditorActivity" />
         <activity android:name=".activities.SupportDevelopmentActivity" />
         <activity android:name=".activities.LicenseActivity" />
@@ -184,14 +181,6 @@
         <activity
             android:name=".activities.saf.SAFGuideActivity"
             android:theme="@style/Theme.Intro" />
-
-        <activity
-            android:name=".activities.ErrorActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="cat.ereza.customactivityoncrash.RESTART" />
-            </intent-filter>
-        </activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"

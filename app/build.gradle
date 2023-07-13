@@ -140,7 +140,7 @@ dependencies {
     implementation libs.androidx.navigation.fragment.ktx
     implementation libs.androidx.navigation.ui.ktx
 
-    implementation 'androidx.work:work-runtime-ktx:2.7.1'
+    // implementation 'androidx.work:work-runtime-ktx:2.7.1'
 
     implementation libs.androidx.room.runtime
     implementation libs.androidx.room.ktx
@@ -193,11 +193,13 @@ dependencies {
     implementation libs.fastscroll.library
     implementation libs.customactivityoncrash
     implementation libs.tankery.circularSeekBar
-    implementation('com.google.api-client:google-api-client-android:1.22.0') {
+    implementation(libs.google.api.client.android) {
         exclude group: 'org.apache.httpcomponents'
     }
-    implementation('com.google.apis:google-api-services-youtube:v3-rev183-1.22.0') {
+    implementation(libs.google.api.services.youtube) {
         exclude group: 'org.apache.httpcomponents'
     }
-    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation libs.picasso
+
+    implementation libs.listenablefuture
 }
