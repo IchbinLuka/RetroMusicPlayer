@@ -15,13 +15,15 @@ package code.name.monkey.retromusic.util
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.media.audiofx.AudioEffect
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import code.name.monkey.retromusic.R
-import code.name.monkey.retromusic.activities.*
+import code.name.monkey.retromusic.activities.DriveModeActivity
+import code.name.monkey.retromusic.activities.LicenseActivity
+import code.name.monkey.retromusic.activities.SupportDevelopmentActivity
+import code.name.monkey.retromusic.activities.WhatsNewFragment
 import code.name.monkey.retromusic.activities.bugreport.BugReportActivity
 import code.name.monkey.retromusic.extensions.showToast
 import code.name.monkey.retromusic.helper.MusicPlayerRemote.audioSessionId
@@ -36,12 +38,6 @@ object NavigationUtil {
     fun goToOpenSource(activity: Activity) {
         activity.startActivity(
             Intent(activity, LicenseActivity::class.java), null
-        )
-    }
-
-    fun goToProVersion(context: Context) {
-        context.startActivity(
-            Intent(context, PurchaseActivity::class.java), null
         )
     }
 

@@ -15,36 +15,40 @@
 package code.name.monkey.retromusic.activities.base
 
 import android.content.Context
-import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.KeyEvent
-import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
-import androidx.core.os.ConfigurationCompat
+import androidx.core.os.LocaleListCompat
 import code.name.monkey.appthemehelper.common.ATHToolbarActivity
 import code.name.monkey.appthemehelper.util.VersionUtils
-import code.name.monkey.retromusic.LanguageContextWrapper
 import code.name.monkey.retromusic.R
-import code.name.monkey.retromusic.extensions.*
+import code.name.monkey.retromusic.extensions.exitFullscreen
+import code.name.monkey.retromusic.extensions.hideStatusBar
+import code.name.monkey.retromusic.extensions.installSplitCompat
+import code.name.monkey.retromusic.extensions.maybeSetScreenOn
+import code.name.monkey.retromusic.extensions.setEdgeToEdgeOrImmersive
+import code.name.monkey.retromusic.extensions.setImmersiveFullscreen
+import code.name.monkey.retromusic.extensions.setLightNavigationBarAuto
+import code.name.monkey.retromusic.extensions.setLightStatusBarAuto
+import code.name.monkey.retromusic.extensions.surfaceColor
 import code.name.monkey.retromusic.util.PreferenceUtil
 import code.name.monkey.retromusic.util.theme.getNightMode
 import code.name.monkey.retromusic.util.theme.getThemeResValue
-import com.google.android.play.core.splitcompat.SplitCompat
-import java.util.*
 
 abstract class AbsThemeActivity : ATHToolbarActivity(), Runnable {
 
     private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        updateLocale()
         updateTheme()
         hideStatusBar()
         super.onCreate(savedInstanceState)
         setEdgeToEdgeOrImmersive()
-        registerSystemUiVisibility()
-        toggleScreenOn()
+        maybeSetScreenOn()
         setLightNavigationBarAuto()
         setLightStatusBarAuto(surfaceColor())
         if (VersionUtils.hasQ()) {
@@ -61,8 +65,13 @@ abstract class AbsThemeActivity : ATHToolbarActivity(), Runnable {
         if (PreferenceUtil.isCustomFont) {
             setTheme(R.style.FontThemeOverlay)
         }
-        if (PreferenceUtil.circlePlayButton) {
-            setTheme(R.style.CircleFABOverlay)
+    }
+
+    private fun updateLocale() {
+        val localeCode = PreferenceUtil.languageCode
+        if (PreferenceUtil.isLocaleAutoStorageEnabled) {
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(localeCode))
+            PreferenceUtil.isLocaleAutoStorageEnabled = true
         }
     }
 
@@ -77,20 +86,6 @@ abstract class AbsThemeActivity : ATHToolbarActivity(), Runnable {
         }
     }
 
-    private fun registerSystemUiVisibility() {
-        val decorView = window.decorView
-        decorView.setOnSystemUiVisibilityChangeListener { visibility ->
-            if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
-                setImmersiveFullscreen()
-            }
-        }
-    }
-
-    private fun unregisterSystemUiVisibility() {
-        val decorView = window.decorView
-        decorView.setOnSystemUiVisibilityChangeListener(null)
-    }
-
     override fun run() {
         setImmersiveFullscreen()
     }
@@ -102,7 +97,6 @@ abstract class AbsThemeActivity : ATHToolbarActivity(), Runnable {
 
     public override fun onDestroy() {
         super.onDestroy()
-        unregisterSystemUiVisibility()
         exitFullscreen()
     }
 
@@ -115,14 +109,7 @@ abstract class AbsThemeActivity : ATHToolbarActivity(), Runnable {
     }
 
     override fun attachBaseContext(newBase: Context?) {
-        val code = PreferenceUtil.languageCode
-        val locale = if (code == "auto") {
-            // Get the device default locale
-            ConfigurationCompat.getLocales(Resources.getSystem().configuration)[0]
-        } else {
-            Locale.forLanguageTag(code)
-        }
-        super.attachBaseContext(LanguageContextWrapper.wrap(newBase, locale))
-        SplitCompat.install(this)
+        super.attachBaseContext(newBase)
+        installSplitCompat()
     }
 }

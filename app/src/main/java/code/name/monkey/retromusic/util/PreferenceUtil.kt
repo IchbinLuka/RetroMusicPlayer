@@ -98,7 +98,20 @@ object PreferenceUtil {
         }
     }
 
-    val languageCode: String get() = sharedPreferences.getString(LANGUAGE_NAME, "auto") ?: "auto"
+    var languageCode: String
+        get() = sharedPreferences.getString(LANGUAGE_NAME, "auto") ?: "auto"
+        set(value) = sharedPreferences.edit {
+            putString(LANGUAGE_NAME, value)
+        }
+
+    var isLocaleAutoStorageEnabled: Boolean
+        get() = sharedPreferences.getBoolean(
+            LOCALE_AUTO_STORE_ENABLED,
+            false
+        )
+        set(value) = sharedPreferences.edit {
+            putBoolean(LOCALE_AUTO_STORE_ENABLED, value)
+        }
 
     var Fragment.userName
         get() = sharedPreferences.getString(
@@ -115,7 +128,7 @@ object PreferenceUtil {
             putString(SAF_SDCARD_URI, value)
         }
 
-    val autoDownloadImagesPolicy
+    private val autoDownloadImagesPolicy
         get() = sharedPreferences.getStringOrDefault(
             AUTO_DOWNLOAD_IMAGES_POLICY,
             "only_wifi"
@@ -242,8 +255,6 @@ object PreferenceUtil {
 
     val isScreenOnEnabled get() = sharedPreferences.getBoolean(KEEP_SCREEN_ON, false)
 
-    val isShuffleModeOn get() = sharedPreferences.getBoolean(TOGGLE_SHUFFLE, false)
-
     val isSongInfo get() = sharedPreferences.getBoolean(EXTRA_SONG_INFO, false)
 
     val isPauseOnZeroVolume get() = sharedPreferences.getBoolean(PAUSE_ON_ZERO_VOLUME, false)
@@ -265,12 +276,7 @@ object PreferenceUtil {
 
     val isAlbumArtOnLockScreen
         get() = sharedPreferences.getBoolean(
-            ALBUM_ART_ON_LOCK_SCREEN, false
-        )
-
-    val isAudioDucking
-        get() = sharedPreferences.getBoolean(
-            AUDIO_DUCKING, true
+            ALBUM_ART_ON_LOCK_SCREEN, true
         )
 
     val isBluetoothSpeaker
@@ -281,7 +287,7 @@ object PreferenceUtil {
     val isBlurredAlbumArt
         get() = sharedPreferences.getBoolean(
             BLURRED_ALBUM_ART, false
-        )
+        ) && !VersionUtils.hasR()
 
     val blurAmount get() = sharedPreferences.getInt(NEW_BLUR_AMOUNT, 25)
 
@@ -336,6 +342,7 @@ object PreferenceUtil {
 
     val isLockScreen get() = sharedPreferences.getBoolean(LOCK_SCREEN, false)
 
+    @Suppress("deprecation")
     fun isAllowedToDownloadMetadata(context: Context): Boolean {
         return when (autoDownloadImagesPolicy) {
             "always" -> true
@@ -471,10 +478,10 @@ object PreferenceUtil {
     val tabTitleMode: Int
         get() {
             return when (sharedPreferences.getStringOrDefault(
-                TAB_TEXT_MODE, "1"
+                TAB_TEXT_MODE, "0"
             ).toInt()) {
-                1 -> BottomNavigationView.LABEL_VISIBILITY_LABELED
                 0 -> BottomNavigationView.LABEL_VISIBILITY_AUTO
+                1 -> BottomNavigationView.LABEL_VISIBILITY_LABELED
                 2 -> BottomNavigationView.LABEL_VISIBILITY_SELECTED
                 3 -> BottomNavigationView.LABEL_VISIBILITY_UNLABELED
                 else -> BottomNavigationView.LABEL_VISIBILITY_LABELED
@@ -696,11 +703,11 @@ object PreferenceUtil {
     val isSnowFalling
         get() = sharedPreferences.getBoolean(SNOWFALL, false)
 
-    val lyricsType: LyricsType
+    val lyricsType: CoverLyricsType
         get() = if (sharedPreferences.getString(LYRICS_TYPE, "0") == "0") {
-            LyricsType.REPLACE_COVER
+            CoverLyricsType.REPLACE_COVER
         } else {
-            LyricsType.OVER_COVER
+            CoverLyricsType.OVER_COVER
         }
 
     var playbackSpeed
@@ -743,6 +750,6 @@ object PreferenceUtil {
         set(value) = sharedPreferences.edit { putString(GOOGLE_API_KEY, value) }
 }
 
-enum class LyricsType {
+enum class CoverLyricsType {
     REPLACE_COVER, OVER_COVER
 }

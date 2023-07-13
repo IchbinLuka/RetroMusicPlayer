@@ -34,7 +34,6 @@ import code.name.monkey.retromusic.databinding.PreferenceNowPlayingScreenItemBin
 import code.name.monkey.retromusic.extensions.*
 import code.name.monkey.retromusic.fragments.AlbumCoverStyle
 import code.name.monkey.retromusic.fragments.AlbumCoverStyle.*
-import code.name.monkey.retromusic.util.NavigationUtil
 import code.name.monkey.retromusic.util.PreferenceUtil
 import code.name.monkey.retromusic.util.ViewUtil
 import com.bumptech.glide.Glide
@@ -81,7 +80,7 @@ class AlbumCoverStylePreferenceDialog : DialogFragment(),
                 if (isAlbumCoverStyle(coverStyle)) {
                     val result = getString(coverStyle.titleRes) + " theme is Pro version feature."
                     showToast(result)
-                    NavigationUtil.goToProVersion(requireActivity())
+                    requireContext().goToProVersion()
                 } else {
                     PreferenceUtil.albumCoverStyle = coverStyle
                 }

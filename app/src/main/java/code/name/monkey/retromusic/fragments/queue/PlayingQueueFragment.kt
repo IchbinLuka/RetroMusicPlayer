@@ -50,6 +50,9 @@ class PlayingQueueFragment : AbsMusicServiceFragment(R.layout.fragment_playing_q
     private var playingQueueAdapter: PlayingQueueAdapter? = null
     private lateinit var linearLayoutManager: LinearLayoutManager
 
+    val mainActivity: MainActivity
+        get() = activity as MainActivity
+
     private fun getUpNextAndQueueTime(): String {
         val duration = MusicPlayerRemote.getQueueDurationMillis(MusicPlayerRemote.position)
         return MusicUtil.buildInfoString(
@@ -69,15 +72,13 @@ class PlayingQueueFragment : AbsMusicServiceFragment(R.layout.fragment_playing_q
             MusicPlayerRemote.clearQueue()
         }
         checkForPadding()
+        mainActivity.collapsePanel()
     }
 
     private fun setUpRecyclerView() {
         recyclerViewTouchActionGuardManager = RecyclerViewTouchActionGuardManager()
         recyclerViewDragDropManager = RecyclerViewDragDropManager()
         recyclerViewSwipeManager = RecyclerViewSwipeManager()
-
-        val animator = DraggableItemAnimator()
-        animator.supportsChangeAnimations = false
 
         playingQueueAdapter = PlayingQueueAdapter(
             requireActivity(),
@@ -90,12 +91,15 @@ class PlayingQueueFragment : AbsMusicServiceFragment(R.layout.fragment_playing_q
 
         linearLayoutManager = LinearLayoutManager(requireContext())
 
-        binding.recyclerView.layoutManager = linearLayoutManager
-        binding.recyclerView.adapter = wrappedAdapter
-        binding.recyclerView.itemAnimator = animator
-        recyclerViewTouchActionGuardManager?.attachRecyclerView(binding.recyclerView)
-        recyclerViewDragDropManager?.attachRecyclerView(binding.recyclerView)
-        recyclerViewSwipeManager?.attachRecyclerView(binding.recyclerView)
+
+        binding.recyclerView.apply {
+            layoutManager = linearLayoutManager
+            adapter = wrappedAdapter
+            itemAnimator = DraggableItemAnimator()
+            recyclerViewTouchActionGuardManager?.attachRecyclerView(this)
+            recyclerViewDragDropManager?.attachRecyclerView(this)
+            recyclerViewSwipeManager?.attachRecyclerView(this)
+        }
         linearLayoutManager.scrollToPositionWithOffset(MusicPlayerRemote.position + 1, 0)
 
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -175,11 +179,12 @@ class PlayingQueueFragment : AbsMusicServiceFragment(R.layout.fragment_playing_q
         playingQueueAdapter = null
         super.onDestroy()
         if (MusicPlayerRemote.playingQueue.isNotEmpty())
-            (requireActivity() as MainActivity).expandPanel()
+            mainActivity.expandPanel()
     }
 
     private fun setupToolbar() {
         binding.appBarLayout.toolbar.subtitle = getUpNextAndQueueTime()
+        binding.appBarLayout.toolbar.isTitleCentered = false
         binding.clearQueue.backgroundTintList = ColorStateList.valueOf(accentColor())
         ColorStateList.valueOf(
             MaterialValueHelper.getPrimaryTextColor(
@@ -197,7 +202,7 @@ class PlayingQueueFragment : AbsMusicServiceFragment(R.layout.fragment_playing_q
             }
             setTitle(R.string.now_playing_queue)
             setTitleTextAppearance(context, R.style.ToolbarTextAppearanceNormal)
-            setNavigationIcon(R.drawable.ic_keyboard_backspace_black)
+            setNavigationIcon(R.drawable.ic_arrow_back)
             ToolbarContentTintHelper.colorBackButton(this)
         }
     }

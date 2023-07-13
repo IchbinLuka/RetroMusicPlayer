@@ -49,11 +49,6 @@ class FitFragment : AbsPlayerFragment(R.layout.fragment_fit) {
 
     override fun onHide() {
         playbackControlsFragment.hide()
-        onBackPressed()
-    }
-
-    override fun onBackPressed(): Boolean {
-        return false
     }
 
     override fun toolbarIconColor(): Int {
@@ -100,7 +95,7 @@ class FitFragment : AbsPlayerFragment(R.layout.fragment_fit) {
     private fun setUpPlayerToolbar() {
         binding.playerToolbar.apply {
             inflateMenu(R.menu.menu_player)
-            setNavigationOnClickListener { requireActivity().onBackPressed() }
+            setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
             setOnMenuItemClickListener(this@FitFragment)
             ToolbarContentTintHelper.colorizeToolbar(
                 this,

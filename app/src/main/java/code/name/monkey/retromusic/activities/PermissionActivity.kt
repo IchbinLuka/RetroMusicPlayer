@@ -14,7 +14,6 @@
  */
 package code.name.monkey.retromusic.activities
 
-import android.Manifest
 import android.Manifest.permission.BLUETOOTH_CONNECT
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -22,6 +21,7 @@ import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.net.toUri
@@ -61,10 +61,14 @@ class PermissionActivity : AbsMusicServiceActivity() {
         if (VersionUtils.hasS()) {
             binding.bluetoothPermission.show()
             binding.bluetoothPermission.setButtonClick {
-                ActivityCompat.requestPermissions(this,
+                ActivityCompat.requestPermissions(
+                    this,
                     arrayOf(BLUETOOTH_CONNECT),
-                    PERMISSION_REQUEST)
+                    BLUETOOTH_PERMISSION_REQUEST
+                )
             }
+        } else {
+            binding.audioPermission.setNumber("2")
         }
 
         binding.finish.accentBackgroundColor()
@@ -79,14 +83,22 @@ class PermissionActivity : AbsMusicServiceActivity() {
                 finish()
             }
         }
+        onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finishAffinity()
+                remove()
+            }
+        })
     }
 
     private fun setupTitle() {
         val color = accentColor()
         val hexColor = String.format("#%06X", 0xFFFFFF and color)
         val appName =
-            getString(R.string.message_welcome,
-                "<b>Retro <span  style='color:$hexColor';>Music</span></b>")
+            getString(
+                R.string.message_welcome,
+                "<b>Retro <span  style='color:$hexColor';>Music</span></b>"
+            )
                 .parseAsHtml()
         binding.appNameText.text = appName
     }
@@ -116,23 +128,19 @@ class PermissionActivity : AbsMusicServiceActivity() {
     }
 
     private fun hasStoragePermission(): Boolean {
-        return ActivityCompat.checkSelfPermission(this,
-            Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        return hasPermissions()
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
     private fun hasBluetoothPermission(): Boolean {
-        return ActivityCompat.checkSelfPermission(this,
-            BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED
+        return ActivityCompat.checkSelfPermission(
+            this,
+            BLUETOOTH_CONNECT
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun hasAudioPermission(): Boolean {
         return Settings.System.canWrite(this)
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finishAffinity()
     }
 }

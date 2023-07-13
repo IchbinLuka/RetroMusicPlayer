@@ -4,13 +4,13 @@ import android.content.Context
 import android.content.res.Configuration
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updateLayoutParams
 import code.name.monkey.retromusic.databinding.CollapsingAppbarLayoutBinding
 import code.name.monkey.retromusic.databinding.SimpleAppbarLayoutBinding
 import code.name.monkey.retromusic.util.PreferenceUtil
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.shape.MaterialShapeDrawable
 import dev.chrisbanes.insetter.applyInsetter
 
@@ -52,24 +52,24 @@ class TopAppBarLayout @JvmOverloads constructor(
         }
     }
 
-    val toolbar: Toolbar
+    val toolbar: MaterialToolbar
         get() = if (mode == AppBarMode.COLLAPSING) {
             collapsingAppbarBinding?.toolbar!!
         } else {
             simpleAppbarBinding?.toolbar!!
         }
 
-    var title: String
+    var title: CharSequence
         get() = if (mode == AppBarMode.COLLAPSING) {
             collapsingAppbarBinding?.collapsingToolbarLayout?.title.toString()
         } else {
-            simpleAppbarBinding?.appNameText?.text.toString()
+            simpleAppbarBinding?.toolbar?.title.toString()
         }
         set(value) {
             if (mode == AppBarMode.COLLAPSING) {
                 collapsingAppbarBinding?.collapsingToolbarLayout?.title = value
             } else {
-                simpleAppbarBinding?.appNameText?.text = value
+                simpleAppbarBinding?.toolbar?.title = value
             }
         }
 

@@ -90,11 +90,6 @@ class MaterialFragment : AbsPlayerFragment(R.layout.fragment_material) {
 
     override fun onHide() {
         playbackControlsFragment.hide()
-        onBackPressed()
-    }
-
-    override fun onBackPressed(): Boolean {
-        return false
     }
 
     override fun toolbarIconColor() = colorControlNormal()
@@ -144,7 +139,7 @@ class MaterialFragment : AbsPlayerFragment(R.layout.fragment_material) {
     private fun setUpPlayerToolbar() {
         binding.playerToolbar.apply {
             inflateMenu(R.menu.menu_player)
-            setNavigationOnClickListener { requireActivity().onBackPressed() }
+            setNavigationOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
             setOnMenuItemClickListener(this@MaterialFragment)
             ToolbarContentTintHelper.colorizeToolbar(
                 this,

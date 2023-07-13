@@ -29,6 +29,7 @@ import code.name.monkey.appthemehelper.util.VersionUtils
 import code.name.monkey.retromusic.*
 import code.name.monkey.retromusic.appshortcuts.DynamicShortcutManager
 import code.name.monkey.retromusic.extensions.materialDialog
+import code.name.monkey.retromusic.fragments.NowPlayingScreen.*
 import code.name.monkey.retromusic.util.PreferenceUtil
 import com.afollestad.materialdialogs.color.colorChooser
 import com.google.android.material.color.DynamicColors
@@ -130,9 +131,15 @@ class ThemeSettingsFragment : AbsSettingsFragment() {
             restartActivity()
             true
         }
+
+        val adaptiveColor: ATESwitchPreference? = findPreference(ADAPTIVE_COLOR_APP)
+        adaptiveColor?.isEnabled =
+            PreferenceUtil.nowPlayingScreen in listOf(Normal, Material, Flat)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.pref_general)
+        val wallpaperAccent: ATESwitchPreference? = findPreference(WALLPAPER_ACCENT)
+        wallpaperAccent?.isVisible = VersionUtils.hasOreoMR1() && !VersionUtils.hasS()
     }
 }

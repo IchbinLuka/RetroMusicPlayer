@@ -15,17 +15,15 @@
 package code.name.monkey.retromusic.fragments.home
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
+import android.view.*
 import android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM
-import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.os.bundleOf
 import androidx.core.text.parseAsHtml
 import androidx.core.view.doOnLayout
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,18 +36,21 @@ import code.name.monkey.retromusic.databinding.FragmentHomeBinding
 import code.name.monkey.retromusic.dialogs.CreatePlaylistDialog
 import code.name.monkey.retromusic.dialogs.ImportPlaylistDialog
 import code.name.monkey.retromusic.extensions.accentColor
-import code.name.monkey.retromusic.extensions.drawNextToNavbar
+import code.name.monkey.retromusic.extensions.dip
 import code.name.monkey.retromusic.extensions.elevatedAccentColor
+import code.name.monkey.retromusic.extensions.setUpMediaRouteButton
 import code.name.monkey.retromusic.fragments.ReloadType
 import code.name.monkey.retromusic.fragments.base.AbsMainActivityFragment
-import code.name.monkey.retromusic.glide.GlideApp
 import code.name.monkey.retromusic.glide.RetroGlideExtension
+import code.name.monkey.retromusic.glide.RetroGlideExtension.profileBannerOptions
+import code.name.monkey.retromusic.glide.RetroGlideExtension.songCoverOptions
+import code.name.monkey.retromusic.glide.RetroGlideExtension.userProfileOptions
 import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import code.name.monkey.retromusic.interfaces.IScrollHelper
 import code.name.monkey.retromusic.model.Song
+import code.name.monkey.retromusic.util.PreferenceUtil
 import code.name.monkey.retromusic.util.PreferenceUtil.userName
-import com.google.android.gms.cast.framework.CastButtonFactory
-import com.google.android.material.shape.MaterialShapeDrawable
+import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
 
@@ -71,6 +72,8 @@ class HomeFragment :
         enterTransition = MaterialFadeThrough().addTarget(binding.contentContainer)
         reenterTransition = MaterialFadeThrough().addTarget(binding.contentContainer)
 
+        checkForMargins()
+
         val homeAdapter = HomeAdapter(mainActivity)
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(mainActivity)
@@ -88,9 +91,6 @@ class HomeFragment :
         colorButtons()
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
-        binding.appBarLayout.statusBarForeground =
-            MaterialShapeDrawable.createWithElevationOverlay(requireContext())
-        binding.toolbar.drawNextToNavbar()
         view.doOnLayout {
             adjustPlaylistButtons()
         }
@@ -173,18 +173,18 @@ class HomeFragment :
             findNavController().navigate(R.id.action_search, null, navOptions)
         }
         val hexColor = String.format("#%06X", 0xFFFFFF and accentColor())
-        val appName = "Retro <span  style='color:$hexColor';>Music</span>".parseAsHtml()
-        binding.appNameText.text = appName
+        val appName = "Retro <font color=$hexColor>Music</font>".parseAsHtml()
+        binding.appBarLayout.title = appName
     }
 
     private fun loadProfile() {
         binding.bannerImage?.let {
-            GlideApp.with(requireContext())
+            Glide.with(requireContext())
                 .load(RetroGlideExtension.getBannerModel())
                 .profileBannerOptions(RetroGlideExtension.getBannerModel())
                 .into(it)
         }
-        GlideApp.with(requireActivity())
+        Glide.with(requireActivity())
             .load(RetroGlideExtension.getUserModel())
             .userProfileOptions(RetroGlideExtension.getUserModel(), requireContext())
             .into(binding.userImage)
@@ -196,6 +196,14 @@ class HomeFragment :
         binding.topPlayed.elevatedAccentColor()
         binding.actionShuffle.elevatedAccentColor()
         binding.downloadButton.elevatedAccentColor()
+    }
+
+    private fun checkForMargins() {
+        if (mainActivity.isBottomNavVisible) {
+            binding.recyclerView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                bottomMargin = dip(R.dimen.bottom_nav_height)
+            }
+        }
     }
 
     override fun onCreateMenu(menu: Menu, inflater: MenuInflater) {
@@ -211,7 +219,7 @@ class HomeFragment :
             ATHToolbarActivity.getToolbarBackgroundColor(binding.toolbar)
         )
         //Setting up cast button
-        CastButtonFactory.setUpMediaRouteButton(requireContext(), menu, R.id.action_cast)
+        requireContext().setUpMediaRouteButton(menu)
     }
 
     override fun scrollToTop() {
@@ -220,17 +228,19 @@ class HomeFragment :
     }
 
     fun setSharedAxisXTransitions() {
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true).addTarget(CoordinatorLayout::class.java)
+        exitTransition =
+            MaterialSharedAxis(MaterialSharedAxis.X, true).addTarget(CoordinatorLayout::class.java)
         reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
     }
 
     private fun setSharedAxisYTransitions() {
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Y, true).addTarget(CoordinatorLayout::class.java)
+        exitTransition =
+            MaterialSharedAxis(MaterialSharedAxis.Y, true).addTarget(CoordinatorLayout::class.java)
         reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false)
     }
 
     private fun loadSuggestions(songs: List<Song>) {
-        if (songs.isEmpty()) {
+        if (!PreferenceUtil.homeSuggestions || songs.isEmpty()) {
             binding.suggestions.root.isVisible = false
             return
         }
@@ -266,7 +276,7 @@ class HomeFragment :
                     MusicPlayerRemote.playNextSong()
                 }
             }
-            GlideApp.with(this)
+            Glide.with(this)
                 .load(RetroGlideExtension.getSongModel(songs[index]))
                 .songCoverOptions(songs[index])
                 .into(imageView)
@@ -286,14 +296,16 @@ class HomeFragment :
     override fun onMenuItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_settings -> findNavController().navigate(
-                R.id.settingsActivity,
+                R.id.settings_fragment,
                 null,
                 navOptions
             )
+
             R.id.action_import_playlist -> ImportPlaylistDialog().show(
                 childFragmentManager,
                 "ImportPlaylist"
             )
+
             R.id.action_add_to_playlist -> CreatePlaylistDialog.create(emptyList()).show(
                 childFragmentManager,
                 "ShowCreatePlaylistDialog"
@@ -309,7 +321,9 @@ class HomeFragment :
 
     override fun onResume() {
         super.onResume()
+        checkForMargins()
         libraryViewModel.forceReload(ReloadType.HomeSections)
+        exitTransition = null
     }
 
     override fun onDestroyView() {

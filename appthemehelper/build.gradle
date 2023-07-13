@@ -1,11 +1,12 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 android {
-    compileSdk 32
+    compileSdk 33
+    namespace "code.name.monkey.appthemehelper"
 
     defaultConfig {
         minSdk 21
-        targetSdk 32
+        targetSdk 33
     }
     buildTypes {
         release {
@@ -23,12 +24,9 @@ android {
 }
 
 dependencies {
-    implementation "androidx.appcompat:appcompat:$appcompat_version"
-    implementation "com.google.android.material:material:$mdc_version"
-    implementation "androidx.preference:preference-ktx:$preference_version"
-
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-
+    implementation libs.androidx.appcompat
+    implementation libs.android.material
+    implementation libs.androidx.preference.ktx
     implementation 'com.github.yausername.youtubedl-android:library:0.13.2'
     implementation 'com.github.yausername.youtubedl-android:ffmpeg:0.13.2'
 }

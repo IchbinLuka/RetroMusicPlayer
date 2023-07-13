@@ -33,7 +33,6 @@ import code.name.monkey.retromusic.databinding.PreferenceNowPlayingScreenItemBin
 import code.name.monkey.retromusic.extensions.*
 import code.name.monkey.retromusic.fragments.NowPlayingScreen
 import code.name.monkey.retromusic.fragments.NowPlayingScreen.*
-import code.name.monkey.retromusic.util.NavigationUtil
 import code.name.monkey.retromusic.util.PreferenceUtil
 import code.name.monkey.retromusic.util.ViewUtil
 import com.bumptech.glide.Glide
@@ -91,7 +90,7 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), ViewPager.OnPageChang
                     val result =
                         "${getString(nowPlayingScreen.titleRes)} theme is Pro version feature."
                     showToast(result)
-                    NavigationUtil.goToProVersion(requireContext())
+                    requireContext().goToProVersion()
                 } else {
                     PreferenceUtil.nowPlayingScreen = nowPlayingScreen
                 }

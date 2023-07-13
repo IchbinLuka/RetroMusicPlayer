@@ -25,6 +25,7 @@ import code.name.monkey.appthemehelper.util.VersionUtils
 import code.name.monkey.retromusic.BLUETOOTH_PLAYBACK
 import code.name.monkey.retromusic.EQUALIZER
 import code.name.monkey.retromusic.R
+import code.name.monkey.retromusic.activities.base.AbsBaseActivity.Companion.BLUETOOTH_PERMISSION_REQUEST
 import code.name.monkey.retromusic.util.NavigationUtil
 
 /**
@@ -48,11 +49,16 @@ class AudioSettings : AbsSettingsFragment() {
         if (VersionUtils.hasS()) {
             bluetoothPreference?.setOnPreferenceChangeListener { _, newValue ->
                 if (newValue as Boolean) {
-                    if (ActivityCompat.checkSelfPermission(requireContext(),
-                            BLUETOOTH_CONNECT) != PERMISSION_GRANTED
+                    if (ActivityCompat.checkSelfPermission(
+                            requireContext(),
+                            BLUETOOTH_CONNECT
+                        ) != PERMISSION_GRANTED
                     ) {
-                        ActivityCompat.requestPermissions(requireActivity(), arrayOf(
-                            BLUETOOTH_CONNECT), 100)
+                        ActivityCompat.requestPermissions(
+                            requireActivity(), arrayOf(
+                                BLUETOOTH_CONNECT
+                            ), BLUETOOTH_PERMISSION_REQUEST
+                        )
                     }
                 }
                 return@setOnPreferenceChangeListener true
